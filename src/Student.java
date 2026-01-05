@@ -15,21 +15,26 @@ public class Student {
     }
 
     public void submitExam() {
+        int attempts = 0;
+        boolean success = false;
         System.out.println(name + " Submission is processing.....");
-        try {
-            int simulateTime = random.nextInt(100);
-            int randomNumber = random.nextInt(100);
-            Thread.sleep(simulateTime);
-            if (randomNumber < 5) {
-                stats.recordFailure();
-                System.out.println(name + " Submission Failed");
-            } else {
+        while (attempts < 2 && !success) {
+            try {
+                attempts++;
+                Thread.sleep(random.nextInt(100));
+                if (random.nextInt(100) < 5) {
+                    throw new RuntimeException(name + "Temporary failure");
+                }
                 stats.recordSuccess();
                 System.out.println(name + " Submission Successful");
-            }
+                success = true;
 
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                if (attempts == 2) {
+                    stats.recordFailure();
+                    System.out.println(name + " Submission Failed");
+                }
+            }
         }
     }
 }
