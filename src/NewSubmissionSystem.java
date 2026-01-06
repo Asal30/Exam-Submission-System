@@ -15,9 +15,11 @@ public class NewSubmissionSystem {
 
     public void processSubmission() {
         executor = Executors.newFixedThreadPool(poolSize);
+//        executor = Executors.newVirtualThreadPerTaskExecutor();
         CountDownLatch latch = new CountDownLatch(numOfStudents);
         stats.startTimer();
 
+        System.out.println("Waiting for all submissions to finish...");
         for (int i = 0; i < numOfStudents; i++) {
             int id = i + 1;
 
@@ -33,7 +35,6 @@ public class NewSubmissionSystem {
         }
 
         try {
-            System.out.println("Waiting for all submissions to finish...");
             latch.await();
             stats.endTimer();
             stats.printResults();
